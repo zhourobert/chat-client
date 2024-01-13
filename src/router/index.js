@@ -5,6 +5,7 @@ import {createRouter, createWebHistory } from 'vue-router'
 
 import LoginPage from "@/views/LoginPage.vue";
 import RegisterPage from "@/views/RegisterPage.vue";
+import ChatPage from "@/views/ChatPage.vue";
 
 const router = createRouter({
     // history: createWebHashHistory(),  // hash 模式
@@ -20,10 +21,18 @@ const router = createRouter({
         },
         {
             path: '/register',
-            name: 'list',
+            name: 'register',
             component: RegisterPage,
             meta: {
                 title: '注册页',
+            },
+        },
+        {
+            path: '/chat',
+            name: 'Chat',
+            component: ChatPage,
+            meta: {
+                title: '聊天界面',
             },
         },
         {

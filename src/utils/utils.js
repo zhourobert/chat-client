@@ -1,10 +1,17 @@
-// import {useRouter} from "vue-router";
 import router from "@/router";
 
-function jump(url) {
+export const host='http://localhost:8999/';
+export function getImg(fileName){
+    return host+'file/download/'+fileName;
+}
+
+export function jump(url) {
     router.push(url)
 }
 
 
 
-export default jump;
+
+
+
+

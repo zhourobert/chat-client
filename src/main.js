@@ -6,7 +6,7 @@ import router from './router'
 import axios from "@/pludge/axios";
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
-
+axios.defaults.baseURL="http://localhost:8999"
 
 const app = createApp(App);
 app.use(router)

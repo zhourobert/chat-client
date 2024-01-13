@@ -1,7 +1,10 @@
 import axios from "axios";
 
-const API=axios.create({
+
+// axios.defaults.baseURL="http://localhost:8999/"
+//创建axios对象供其他组件导入使用
+const api=axios.create({
     baseURL:"http://localhost:8999/"
 })
 
-export default API
+export default api

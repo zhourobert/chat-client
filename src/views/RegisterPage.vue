@@ -1,42 +1,82 @@
 <script setup>
-import {getCurrentInstance, reactive} from "vue";
-import jump from "@/utils/utils";
-const { proxy } = getCurrentInstance()
+import { ref} from "vue";
+import {jump,getImg} from "@/utils/utils";
+import {ElMessage} from "element-plus";
+// import axios from "axios";
+import api from "@/pludge/axios";
 
 
-// const imageUrl = null
+let imageUrl = ref('');
 
 
-const handleAvatarSuccess=()=>{
+const handleAvatarSuccess=(data)=>{
+  console.log("进入了图片上传成功方法")
+  console.log(data);
+  if (data.code===200){
+    form.value.header=data.data;
 
+    imageUrl.value=getImg(data.data);
+    console.log(imageUrl);
+
+  }
 }
-const beforeAvatarUpload=()=>{
 
-}
 
-const icon=reactive({
+const icon=ref({
   size:50,
   color: '#8c939d'
 })
 
-const form = reactive({
-  user: "",
-  password: "",
-  nickname:"",
-  email:""
-
+const form = ref({
+  username: '',
+  password: '',
+  nickname:'',
+  email:'',
+  header:''
 })
 
 
 const register=()=>{
-  proxy.$http({
-    method:"POST",
-    params:form,
-    url:"/test/t"
-  }).then((result)=>{
-    var data=result.data
-    console.log(data)
-  })
+  api.post("/user/register",form.value)
+      .then((result)=> {
+        var data = result.data
+        console.log(data)
+        if (data.code === 200) {
+          ElMessage({
+            showClose: true,
+            message: '注册成功',
+          })
+          jump('/')
+        } else {
+          ElMessage({
+            showClose: true,
+            message: '发生异常未正常注册',
+            type: 'error',
+          })
+        }
+      })
+
+  // proxy.$http({
+  //   method:"POST",
+  //   data:form.value,
+  //   url:"/user/register"
+  // }).then((result)=>{
+  //   var data=result.data
+  //   console.log(data)
+  //   if(data.code===200){
+  //     ElMessage({
+  //       showClose: true,
+  //       message: '注册成功',
+  //     })
+  //     jump('/')
+  //   }else {
+  //     ElMessage({
+  //       showClose: true,
+  //       message: '发生异常未正常注册',
+  //       type: 'error',
+  //     })
+  //   }
+  // })
 }
 
 
@@ -48,12 +88,12 @@ const register=()=>{
       <!--      头像-->
       <div id="img">
         <el-upload
-            action="http://localhost:8999/uploadImg"
+            action="http://localhost:8999/file/upload"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
+            style="width: 100px;height: 100px;display:flex;flex-direction: column;justify-content: center;align-content: center"
         >
-          <el-image v-if="imageUrl" />
+          <img id="avatar" v-if="imageUrl" :src="imageUrl"/>
           <div id="my-icon" v-else>
             <el-icon  :size="icon.size" :color="icon.color">
               <Plus />
@@ -67,19 +107,19 @@ const register=()=>{
       </div>
       <!-- 输入注册表单-->
       <div id="input">
-        <el-form ref="form" :model="form" label-width="80px" label-position="left">
-          <el-form-item label="用户名" :style="style">
-            <el-input v-model="form.user" placeholder="请输入用户名" />
+        <el-form  :model="form" label-width="80px" label-position="left">
+          <el-form-item label="用户名">
+            <el-input v-model="form.username" placeholder="请输入用户名" />
           </el-form-item>
-          <el-form-item label="密码" :style="style">
+          <el-form-item label="密码" >
             <el-input v-model="form.password" type="password"
                       placeholder="请输入密码"
                       />
           </el-form-item>
-          <el-form-item label="昵称" :style="style">
+          <el-form-item label="昵称" >
             <el-input v-model="form.nickname" placeholder="请输入昵称"/>
           </el-form-item>
-          <el-form-item label="邮箱" :style="style">
+          <el-form-item label="邮箱">
             <el-input v-model="form.email" placeholder="请输入邮箱"/>
           </el-form-item>
         </el-form>
@@ -144,6 +184,12 @@ const register=()=>{
   box-shadow: var(--el-box-shadow-dark);
 
 
+}
+#avatar{
+  width: 100px;
+  height: 100px;
+  padding: 2px;
+  box-sizing: border-box;
 }
 #my-icon{
   display: flex;

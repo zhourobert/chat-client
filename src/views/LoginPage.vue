@@ -1,25 +1,38 @@
 <script setup>
-import {getCurrentInstance, reactive, ref} from "vue";
-import jump from "@/utils/utils";
-const { proxy } = getCurrentInstance()
+import {  ref} from "vue";
+import {jump} from "@/utils/utils";
+import api from "@/pludge/axios";
+// const { proxy } = getCurrentInstance()
 
 
 const imageUrl = ref(require("../assets/defaultUser.png"))
 
-const form = reactive({
-  user: null,
+const form = ref({
+  username: null,
   password: null
 })
 
 const login=()=>{
-  proxy.$http({
-    method:"GET",
-    params:form,
-    url:"/test/t"
-  }).then((result)=>{
-    var data=result.data
-    console.log(data)
+  console.log("传入对象为：")
+  console.log(form.value)
+  api.get("/user/login", {
+    params:form.value
   })
+      .then((result)=>{
+        console.log("axios成功结果"+ result)
+        // jump("/chat")
+      }).catch((error)=>{
+    console.log("axios失败结果"+error.code+error.msg);
+  })
+
+  // proxy.$http({
+  //   method:"GET",
+  //   params:form,
+  //   url:"/test/t"
+  // }).then((result)=>{
+  //   var data=result.data
+  //   console.log(data)
+  // })
 }
 </script>
 
@@ -31,7 +44,7 @@ const login=()=>{
         <el-image :src="imageUrl"></el-image>
       </div>
       <div id="input">
-        <el-input v-model="form.user" placeholder="请输入账号"/>
+        <el-input v-model="form.username" placeholder="请输入账号"/>
         <el-input v-model="form.password" type="password"
                   placeholder="请输入密码"
                   show-password/>
