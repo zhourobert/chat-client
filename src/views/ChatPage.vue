@@ -1,5 +1,12 @@
 <script setup>
+import {jwtDecode} from "jwt-decode";
+import {getImg} from "@/utils/utils";
 
+const token=window.localStorage.getItem("userJwt")
+console.log("取出的token里的为："+ token)
+const userInfo=jwtDecode(token);
+console.log(userInfo);
+const imageUrl=getImg(userInfo.header);
 
 </script>
 

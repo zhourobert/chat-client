@@ -6,6 +6,7 @@ import {createRouter, createWebHistory } from 'vue-router'
 import LoginPage from "@/views/LoginPage.vue";
 import RegisterPage from "@/views/RegisterPage.vue";
 import ChatPage from "@/views/ChatPage.vue";
+import FindPassword from "@/views/FindPassword.vue";
 
 const router = createRouter({
     // history: createWebHashHistory(),  // hash 模式
@@ -29,10 +30,18 @@ const router = createRouter({
         },
         {
             path: '/chat',
-            name: 'Chat',
+            name: 'chat',
             component: ChatPage,
             meta: {
                 title: '聊天界面',
+            },
+        },
+        {
+            path: '/findPassword',
+            name: 'findPassword',
+            component: FindPassword,
+            meta: {
+                title: '密码找回',
             },
         },
         {
