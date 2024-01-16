@@ -1,24 +1,52 @@
 <script setup>
 import {jwtDecode} from "jwt-decode";
-import {getImg} from "@/utils/utils";
+import {getImg, jump} from "@/utils/utils";
+import {ref} from "vue";
 
 const token=window.localStorage.getItem("userJwt")
-console.log("取出的token里的为："+ token)
 const userInfo=jwtDecode(token);
-console.log(userInfo);
 const imageUrl=getImg(userInfo.header);
+
+const chatListIcon=ref('image/chat1.png')
+const friendRequestIcon=ref('image/friendRequest1.png')
+const friendAddIcon=ref('image/friendAdd1.png')
+
+
+
 
 </script>
 
 <template>
   <div id="background">
-    <div id="login-window">
-      <!--      头像-->
-      <div id="img">
-
-        <el-image :src="imageUrl"></el-image>
-
+    <div id="chat-window">
+      <div id="menu">
+        <!--      头像-->
+        <div id="img">
+          <img id="avatar" :src="imageUrl"/>
+        </div>
+        <div id="icon-menu">
+          <div class="icon">
+            <img :src="chatListIcon"
+                 @click="jump('/chatList')"
+            >
+          </div>
+          <div class="icon">
+            <img :src="friendRequestIcon"
+                 @click="jump('/friendRequest')"
+            >
+          </div>
+          <div class="icon">
+            <img :src="friendAddIcon"
+                 @click="jump('/friendAdd')"
+            >
+          </div>
+        </div>
       </div>
+      <div id="right-div">
+        <router-view/>
+      </div>
+      <div></div>
+
     </div>
   </div>
 </template>
@@ -34,26 +62,38 @@ const imageUrl=getImg(userInfo.header);
   align-content: center;
 }
 
-#login-window {
-  width: 600px;
+#chat-window {
+  width: 800px;
   height: 500px;
-  padding: 30px;
+
   box-sizing: border-box;
-  background-color: #2EC4B6;
+  background-color: #084C61;
 
   display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
+  flex-wrap: nowrap;
+  flex-direction: row;
   justify-content: space-between;
 //align-content: center;
 
   box-shadow: var(--el-box-shadow-dark);
 
 }
+#menu{
+  height: 100%;
+  width: 62px;
+  background-color: #2EC4B6;
+  padding: 6px;
+  box-sizing: border-box;
 
+  display: flex;
+  flex-direction: column;
+}
+#right-div{
+  flex-grow: 1;
+}
 #img {
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
   background-color: white;
 
   display: flex;
@@ -61,20 +101,37 @@ const imageUrl=getImg(userInfo.header);
   flex-wrap: wrap;
   justify-content: center;
   align-content: center;
-  margin-right: auto;
+  margin-top: 5px;
   box-shadow: var(--el-box-shadow-dark);
 
 
 }
 #avatar{
-  width: 100px;
-  height: 100px;
+  width: inherit;
+  height: inherit;
   padding: 2px;
   box-sizing: border-box;
 }
-#my-icon{
-  display: flex;
-  flex-direction: column;
+#icon-menu{
+  display: inherit;
+  flex-direction: inherit;
+
+  width: 50px;
+  height: 40%;
+  justify-content: space-evenly;
+  align-content: center;
+  flex-wrap: wrap;
+
+}
+.icon{
+  width: 30px;
+  height: 30px;
+
+}
+
+.icon img{
+  width: inherit;
+  height: inherit;
 }
 #input {
   height: 200px;

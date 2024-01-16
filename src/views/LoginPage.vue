@@ -3,9 +3,17 @@ import {ref, watch} from "vue";
 import {jump} from "@/utils/utils";
 import api from "@/pludge/axios";
 import {getImg} from "@/utils/utils";
+import {ElMessage} from "element-plus";
 
 
 const imageUrl = ref(require("../assets/defaultUser.png"))
+
+
+
+const form = ref({
+  username: null,
+  password: null
+})
 
 // 延迟查询
 //延迟时间
@@ -13,25 +21,19 @@ const delay=200;
 //全局延迟计时器
 let timer;
 
-const form = ref({
-  username: null,
-  password: null
-})
-
-watch(form,(newValue)=>{
+watch(()=>form.value.username,(newValue)=>{
   if (timer){
     clearTimeout(timer);
   }
   timer= setTimeout(()=>{
     api.get("/user/getHeader",{
-      params:newValue
+      params: {username:newValue}
     }).then((result)=>{
       if (result.data.code===200){
         imageUrl.value=getImg(result.data.data);
       }
     })
   },delay)
-
 }, {deep: true})
 
 const login=()=>{
@@ -43,11 +45,27 @@ const login=()=>{
         console.log("axios成功结果"+ result.data.code)
         if (result.data.code===200){
           window.localStorage.setItem("userJwt",result.data.data);
+          ElMessage({
+            showClose: true,
+            message: result.data.msg,
+            type: "success"
+          })
           jump("/chat")
+        }else {
+          ElMessage({
+            showClose: true,
+            message: result.data.msg,
+            type: "error"
+          })
         }
         // jump("/chat")
-      }).catch((error)=>{
-    console.log("axios失败结果"+error.code+error.msg);
+      }).catch((err)=>{
+    console.log("axios失败结果"+err.code+err.msg);
+    ElMessage({
+      showClose: true,
+      message: err.data.msg,
+      type: "error"
+    })
   })
 }
 </script>

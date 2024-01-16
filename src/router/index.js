@@ -7,6 +7,9 @@ import LoginPage from "@/views/LoginPage.vue";
 import RegisterPage from "@/views/RegisterPage.vue";
 import ChatPage from "@/views/ChatPage.vue";
 import FindPassword from "@/views/FindPassword.vue";
+import ChatList from "@/components/ChatList.vue";
+import FriendAdd from "@/components/FriendAdd.vue";
+import FriendRequest from "@/components/FriendRequest.vue";
 
 const router = createRouter({
     // history: createWebHashHistory(),  // hash 模式
@@ -35,6 +38,24 @@ const router = createRouter({
             meta: {
                 title: '聊天界面',
             },
+            children: [
+                {
+                    path: '/chatList',
+                    name: 'chatList',
+                    component: ChatList,
+                },
+                {
+                    path: '/friendAdd',
+                    name: 'friendAdd',
+                    component: FriendAdd,
+                },
+                {
+                    path: '/friendRequest',
+                    name: 'friendRequest',
+                    component: FriendRequest,
+                },
+            ]
+
         },
         {
             path: '/findPassword',

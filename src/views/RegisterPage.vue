@@ -45,6 +45,7 @@ const register=()=>{
           ElMessage({
             showClose: true,
             message: '注册成功',
+            type: "success"
           })
           jump('/')
         } else {
@@ -55,28 +56,6 @@ const register=()=>{
           })
         }
       })
-
-  // proxy.$http({
-  //   method:"POST",
-  //   data:form.value,
-  //   url:"/user/register"
-  // }).then((result)=>{
-  //   var data=result.data
-  //   console.log(data)
-  //   if(data.code===200){
-  //     ElMessage({
-  //       showClose: true,
-  //       message: '注册成功',
-  //     })
-  //     jump('/')
-  //   }else {
-  //     ElMessage({
-  //       showClose: true,
-  //       message: '发生异常未正常注册',
-  //       type: 'error',
-  //     })
-  //   }
-  // })
 }
 
 

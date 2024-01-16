@@ -1,33 +1,76 @@
 <script setup>
 import {ref} from "vue";
 import {jump} from "@/utils/utils";
+import api from "@/pludge/axios";
+import {ElMessage} from "element-plus";
 
 
 const form = ref({
   username: null,
-  email: null,
-  VerificationCode:null
+  password: null,
+  verificationCode: null
 })
+
+const sendCode = () => {
+  api.get("/user/sendEmail", {
+    params: form.value
+  }).then((result) => {
+    console.log(result.data.date)
+    if (result.data.code === 200) {
+      ElMessage({
+        showClose: true,
+        message: result.data.msg,
+        type: "success"
+      })
+    }
+  }).catch((err) => {
+    ElMessage({
+      showClose: true,
+      message: err.data.msg,
+      type: "error"
+    })
+  })
+}
+
+const retrievePassword = () => {
+  api.post("/user/updatePassword", form.value)
+      .then((result) => {
+        if (result.data.code === 200) {
+          ElMessage({
+            showClose: true,
+            message: result.data.msg,
+            type: "success"
+          })
+          jump("/")
+        }
+      }).catch((err) => {
+    ElMessage({
+      showClose: true,
+      message: err.data.msg,
+      type: "error"
+    })
+  })
+}
 </script>
 
 <template>
   <div id="background">
     <div id="login-window">
       <div id="title">
-        <h3>密码找回</h3>
+        <h3>密码修改</h3>
       </div>
       <div id="input">
         <el-input v-model="form.username" placeholder="请输入账号" style="margin-top: -100px"/>
-        <el-input v-model="form.email" type="password"
-                  placeholder="请输入邮箱"
+        <el-input v-model="form.password" type="password"
+                  placeholder="请输入新密码"
                   show-password/>
         <div style="display: flex; margin-bottom: -50px">
-          <el-input v-model="form.VerificationCode" placeholder="请输入验证码"/>
-          <el-button color="#FF3366" type="primary" @click="login">发送验证码</el-button>
+          <el-input v-model="form.verificationCode" placeholder="请输入验证码"/>
+          <el-button color="#FF3366" type="primary" @click="sendCode">发送验证码</el-button>
         </div>
       </div>
 
-      <el-button color="#FF3366" type="primary" @click="login">找回密码</el-button>
+      <el-button color="#FF3366" type="primary" @click="retrievePassword">找回密码</el-button>
       <div id="bottom">
         <span @click="jump('/')">返回登陆</span>
       </div>
@@ -63,7 +106,8 @@ const form = ref({
   box-shadow: var(--el-box-shadow-dark);
 
 }
-#title{
+
+#title {
   height: 100px;
   display: flex;
   justify-content: flex-start;
