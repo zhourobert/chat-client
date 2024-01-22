@@ -6,9 +6,6 @@ import {jwtDecode} from "jwt-decode";
 import {ElMessage} from "element-plus";
 
 
-
-
-
 // --------------------------------------------------
 
 
@@ -41,33 +38,34 @@ watch(() => searchText, (newValue) => {
 let dialogFormVisible = ref(false)
 const formLabelWidth = '80px'
 
-let notes=ref('')
-let requestMsg=ref('你好，我是')
-let requestToId=ref(null);
+let notes = ref('')
+let requestMsg = ref('你好，我是')
+let requestToId = ref(null);
 
-const changeFormVisible=()=>{
+const changeFormVisible = () => {
   dialogFormVisible.value = !dialogFormVisible.value
 }
-const toRequest=(id)=>{
-  requestToId.value=id;
+const toRequest = (id) => {
+  requestToId.value = id;
   changeFormVisible()
 }
 
 const friendRequest = () => {
-  var jwtUser = jwtDecode(window.localStorage.getItem("userJwt"))
-  api.post("", {
-    uId: jwtUser.id,
-    fId: requestToId.value,
-    notes: notes.value,
-    requestMsg: requestMsg.value
-  }).then((result)=>{
-    if (result.data.code===200){
+  let jwt = window.localStorage.getItem("userJwt")
+  let uid = jwtDecode(jwt).id
+  api.post("/friendRequest/sendFriendRequest", {
+      uId: uid,
+      fId: requestToId.value,
+      notes: notes.value,
+      requestMsg: requestMsg.value
+  }).then((result) => {
+    if (result.data.code === 200) {
       ElMessage({
         showClose: true,
         message: result.data.msg,
         type: "success"
       })
-    }else {
+    } else {
       ElMessage({
         showClose: true,
         message: result.data.msg,

@@ -1,9 +1,20 @@
 <script setup>
-import {ref, watch} from "vue";
+import { onMounted, ref, watch} from "vue";
 import {jump} from "@/utils/utils";
 import api from "@/pludge/axios";
 import {getImg} from "@/utils/utils";
 import {ElMessage} from "element-plus";
+
+
+
+onMounted(()=>{
+  var token=window.localStorage.getItem("userJwt")
+  console.log("初始化了jwt令牌:"+token)
+  if(token){
+    jump('/chat')
+  }
+
+})
 
 
 const imageUrl = ref(require("../assets/defaultUser.png"))
@@ -44,6 +55,7 @@ const login=()=>{
         console.log("axios成功结果"+ result)
         console.log("axios成功结果"+ result.data.code)
         if (result.data.code===200){
+
           window.localStorage.setItem("userJwt",result.data.data);
           ElMessage({
             showClose: true,

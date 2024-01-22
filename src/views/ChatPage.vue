@@ -1,17 +1,47 @@
 <script setup>
 import {jwtDecode} from "jwt-decode";
 import {getImg, jump} from "@/utils/utils";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import api from "@/pludge/axios";
 
-const token=window.localStorage.getItem("userJwt")
-const userInfo=jwtDecode(token);
-const imageUrl=getImg(userInfo.header);
+const imageUrl=ref(null)
+
+
+
+onMounted(()=>{
+  const token=window.localStorage.getItem("userJwt")
+  const userInfo=jwtDecode(token);
+
+  imageUrl.value=getImg(userInfo.header);
+
+  console.log("生命周期axios执行传入令牌用户id:id="+userInfo.id)
+  api.get("/user/verifyToken",{
+    params: {id: userInfo.id}
+  }).then((result)=>{
+    console.log("权限验证返回代码"+result.data.code)
+    if (result.data.code!==200){
+      window.localStorage.removeItem("userJwt")
+      console.log("权限验证返回不是200")
+      jump("/")
+    }
+  }).catch((err)=>{
+    console.log("生命周期axios执行3"+err)
+    jump("/")
+  })
+})
+
+
+
 
 const chatListIcon=ref('image/chat1.png')
 const friendRequestIcon=ref('image/friendRequest1.png')
 const friendAddIcon=ref('image/friendAdd1.png')
+const signOut=ref('image/signOut1.png')
 
-
+const logout=()=>{
+  window.localStorage.removeItem("userJwt")
+  jump("/")
+}
 
 
 </script>
@@ -40,6 +70,12 @@ const friendAddIcon=ref('image/friendAdd1.png')
                  @click="jump('/friendAdd')"
             >
           </div>
+        </div>
+        <div id="signOut-btn">
+          <el-button color="#FF3366" type="primary" @click="logout"
+          style="width: 40px; height: 40px;">
+            <img :src="signOut" style="height: 20px; width: 20px"/>
+          </el-button>
         </div>
       </div>
       <div id="right-div">
@@ -82,11 +118,12 @@ const friendAddIcon=ref('image/friendAdd1.png')
   height: 100%;
   width: 62px;
   background-color: #2EC4B6;
-  padding: 6px;
+  padding: 10px 6px;
   box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
+
 }
 #right-div{
   flex-grow: 1;
@@ -133,25 +170,11 @@ const friendAddIcon=ref('image/friendAdd1.png')
   width: inherit;
   height: inherit;
 }
-#input {
-  height: 200px;
-//width: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-
-
+#signOut-btn{
+  align-self: center;
+  margin-top: auto;
 }
 
-#bottom {
-  display: flex;
-  justify-content: end;
-
-
-}
-el-button{
-  width: 300px;
-}
 
 #img span{
   font-size: 8px;
