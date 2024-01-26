@@ -11,7 +11,11 @@ const imageUrl=ref(null)
 onMounted(()=>{
   const token=window.localStorage.getItem("userJwt")
   const userInfo=jwtDecode(token);
+  console.log("现在的用户id为"+userInfo);
+  if(userInfo===null){
 
+    jump("/")
+  }
   imageUrl.value=getImg(userInfo.header);
 
   console.log("生命周期axios执行传入令牌用户id:id="+userInfo.id)
@@ -37,6 +41,8 @@ const chatListIcon=ref('image/chat1.png')
 const friendRequestIcon=ref('image/friendRequest1.png')
 const friendAddIcon=ref('image/friendAdd1.png')
 const signOut=ref('image/signOut1.png')
+const news=ref('image/news.png')
+const config=ref('image/config.png')
 
 const logout=()=>{
   window.localStorage.removeItem("userJwt")
@@ -68,6 +74,16 @@ const logout=()=>{
           <div class="icon">
             <img :src="friendAddIcon"
                  @click="jump('/friendAdd')"
+            >
+          </div>
+          <div class="icon">
+            <img :src="news"
+                 @click="jump('/news')"
+            >
+          </div>
+          <div class="icon">
+            <img :src="config"
+                 @click="jump('/config')"
             >
           </div>
         </div>
@@ -154,7 +170,7 @@ const logout=()=>{
   flex-direction: inherit;
 
   width: 50px;
-  height: 40%;
+  height: 60%;
   justify-content: space-evenly;
   align-content: center;
   flex-wrap: wrap;

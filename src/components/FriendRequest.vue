@@ -17,10 +17,10 @@ onMounted(()=>{
 
 const handleFriendRequest=(id,code)=>{
   api.patch("/friendRequest/patchRequest",{
-
     friendRequestId: id,
     statusCode: code
-
+  }).then(()=>{
+    location.reload();
   })
 }
 
@@ -36,15 +36,19 @@ const handleFriendRequest=(id,code)=>{
           <img :src="getImg(request.friendInfo.header)">
           <div class="describe">
             <span style="font-weight: bolder; color: #ffffff">{{ request.friendInfo.nickname }}</span>
-            <el-button v-if="request.friendInfo.status===0" color="#FF3366" type="primary"
-                       @click="handleFriendRequest(request.id,1)">
-              同意
-            </el-button>
-            <el-button v-if="request.friendInfo.status===0" color="#FF3366" type="primary"
-                       @click="handleFriendRequest(request.id,-1)">
-              拒绝
-            </el-button>
-            <p v-else>已经添加为好友</p>
+            <div class="request-btn">
+              <el-button v-if="request.status===0" color="#FF3366" type="primary"
+                         @click="handleFriendRequest(request.id,1)">
+                同意
+              </el-button>
+              <el-button v-if="request.status===0" color="#3D3B8E" type="primary"
+                         @click="handleFriendRequest(request.id,-1)">
+                拒绝
+              </el-button>
+              <p v-else-if="request.status===1">已经添加为好友</p>
+              <p v-else>已经添加为好友</p>
+            </div>
+
           </div>
         </div>
 
@@ -109,5 +113,12 @@ const handleFriendRequest=(id,code)=>{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+.describe p{
+  color: white;
+}
+.request-btn{
+  display: flex;
+  flex-direction: row;
 }
 </style>
