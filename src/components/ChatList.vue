@@ -1,6 +1,8 @@
 <script setup>
 
 import {ref} from "vue";
+import FriendChatDialogue from "@/components/FriendChatDialogue.vue";
+import DialogBox from "@/components/DialogBox.vue";
 
 
 const voice=ref('image/voice.png')
@@ -8,12 +10,24 @@ const file=ref('image/file.png')
 const onlinePhone=ref('image/onlinePhone.png')
 
 // let textarea=ref(null)
-
+let imgUrl=ref(require("@/assets/defaultUser.png"))
+let content=ref({
+  header:imgUrl,
+  name:"匿名用户",
+  time:"2024年01月26日 20:55",
+  message:"第一种方式（适用于单个资源文件） import homeBg from 'src/assets/images/home/home_bg.png' <img :src= \"homeBg\" /> 第二种方式（适用于多个资源文件，动态传入文件路径） new URL () + import.meta.url 在src目录下创建一个util文件夹，文件夹里创建一个utils.ts文件 // 获取assets静态资源 const getAssetsFile = (url: string) => {"
+})
+const role=ref("u-chat")
+let myRole=ref({
+  header:imgUrl,
+  name:"匿名用户",
+  msg:"他和你哼哼哈哈哈哈说话了"
+})
 </script>
 
 <template>
   <div id="window">
-    <div id="friend-list">
+    <div id="friend-list" class="input">
       <div class="chatter">
         <div class="my-avatar">
           <img src="../assets/defaultUser.png">
@@ -44,19 +58,26 @@ const onlinePhone=ref('image/onlinePhone.png')
           <span>他和你说话了</span>
         </div>
       </div>
+      <DialogBox :role="myRole"></DialogBox>
+      <DialogBox :role="myRole"></DialogBox>
+      <DialogBox :role="myRole"></DialogBox>
+      <DialogBox :role="myRole"></DialogBox>
+      <DialogBox :role="myRole"></DialogBox>
+      <DialogBox :role="myRole"></DialogBox>
     </div>
     <div id="chat-window">
       <div id="chat-box" class="input">
-        <div class="dialogue">
+        <div class="dialogue friend-chat">
           <div class="chat-avatar">
-            <img src="../assets/defaultUser.png"/>
+            <img :src="imgUrl"/>
           </div>
           <div class="msg">
             <span style="font-weight: bolder; color: #ffffff;">默认用户 2024年01月26日 20:55</span>
             <div class="bubble">他和你说话了</div>
           </div>
         </div>
-        <div class="dialogue">
+        <FriendChatDialogue :content="content" :role="role"></FriendChatDialogue>
+        <div class="dialogue friend-chat">
           <div class="chat-avatar">
             <img src="../assets/defaultUser.png"/>
           </div>
@@ -66,12 +87,21 @@ const onlinePhone=ref('image/onlinePhone.png')
               白发渔樵江渚上，惯看秋月春风。一壶浊酒喜相逢。古今多少事，都付笑谈中</div>
           </div>
         </div>
-        <div class="dialogue">
+        <div class="dialogue friend-chat">
           <div class="chat-avatar">
             <img src="../assets/defaultUser.png"/>
           </div>
           <div class="msg">
             <span style="font-weight: bolder; color: #ffffff;">默认用户 2024年01月26日 20:55</span>
+            <div class="bubble">他和你说话了</div>
+          </div>
+        </div>
+        <div class="dialogue u-chat">
+          <div class="chat-avatar">
+            <img src="../assets/defaultUser.png"/>
+          </div>
+          <div class="msg">
+            <div style="font-weight: bolder; color: #ffffff;">默认用户 2024年01月26日 20:55</div>
             <div class="bubble">他和你说话了</div>
           </div>
         </div>
@@ -122,7 +152,13 @@ const onlinePhone=ref('image/onlinePhone.png')
   border-right: dashed 1px white;
   border-left: dashed 1px white;
   box-sizing: border-box;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
 }
+
 #chat-window{
   flex: 1;
 }
@@ -165,9 +201,11 @@ const onlinePhone=ref('image/onlinePhone.png')
   flex-grow: 1;
 }
 #chat-box{
+
   height: 60%;
   width: 100%;
   background-color: #084c61;
+  overflow: scroll;
 }
 #chat-bar{
   width: 100%;
@@ -209,35 +247,59 @@ const onlinePhone=ref('image/onlinePhone.png')
 
 .dialogue{
   margin-top: 10px;
-
   display: flex;
   width: 100%;
 
+}
+.friend-chat{
+  flex-direction: row;
+}
+.u-chat{
+  flex-direction: row-reverse;
 }
 .msg{
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: start;
-  align-content: start;
   flex-wrap: wrap;
-  text-align: start;
+}
+.friend-chat .msg{
   margin-left: 10px;
+  align-content: start;
+  justify-content: start;
+  text-align: start;
+}
+.u-chat .msg{
+  margin-right: 10px;
+  align-content: flex-end;
+  justify-content: flex-end;
+
 }
 .bubble{
   max-width: 80%;
   width: fit-content;
-
   margin-top: 5px;
   padding: 10px;
   box-sizing: border-box;
+}
+.friend-chat .bubble{
   background-color: #B55272;
+}
+.u-chat .bubble{
+  background-color: #2EC4B6;
+  align-self: end;
 }
 .chat-avatar img{
   width: 30px;
   height: 30px;
   margin-top: 10px;
+
+}
+.friend-chat .chat-avatar img{
   margin-left: 10px;
+}
+.u-chat .chat-avatar img{
+  margin-right: 10px;
 }
 
 
