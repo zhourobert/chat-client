@@ -1,15 +1,42 @@
 <script setup>
 
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import FriendChatDialogue from "@/components/FriendChatDialogue.vue";
 import DialogBox from "@/components/DialogBox.vue";
+import api from "@/pludge/axios";
+import {jwtDecode} from "jwt-decode";
+import {getImg} from "@/utils/utils";
 
 
 const voice=ref('image/voice.png')
 const file=ref('image/file.png')
 const onlinePhone=ref('image/onlinePhone.png')
 
-// let textarea=ref(null)
+let friendList=ref(null)
+
+onMounted(()=>{
+  const userInfo=jwtDecode(window.localStorage.getItem("userJwt"));
+  //获取好友列表
+  api.get("/msgHistory/getFriendList",{
+    params:{id:userInfo.id}
+  }).then((result)=>{
+    console.log("axio获取好友列表为："+result.data.data)
+    friendList.value=result.data.data
+  })
+})
+//TODO：还有一个动画效果要实现，实现一个点击对话保持变色，并且其他弹起
+//鼠标点击切换对话
+const toThisChat=(id)=>{
+  console.log("点击获取好友id为:"+id)
+
+  api.get("",{
+    params:id
+  }).then((result)=>{
+    console.log("获取聊天内容为："+result.data.data)
+  })
+}
+
+
 let imgUrl=ref(require("@/assets/defaultUser.png"))
 let content=ref({
   header:imgUrl,
@@ -28,42 +55,16 @@ let myRole=ref({
 <template>
   <div id="window">
     <div id="friend-list" class="input">
-      <div class="chatter">
-        <div class="my-avatar">
-          <img src="../assets/defaultUser.png">
-        </div>
 
-        <div class="my-message">
-          <span style="font-weight: bolder; color: #ffffff;">默认用户</span>
-          <span>他和你说话了</span>
-        </div>
+      <div v-if="friendList!=null">
+        <template  v-for="(item,index) in friendList" :key="index">
+          <DialogBox :header="getImg(item.header)" :name="item.nickname"
+                     @click="toThisChat(item.fId)"></DialogBox>
+        </template>
       </div>
-      <div class="chatter">
-        <div class="my-avatar">
-          <img src="../assets/defaultUser.png">
-        </div>
 
-        <div class="my-message">
-          <span style="font-weight: bolder; color: #ffffff;">默认用户</span>
-          <span>他和你说话了</span>
-        </div>
-      </div>
-      <div class="chatter">
-        <div class="my-avatar">
-          <img src="../assets/defaultUser.png">
-        </div>
+      <DialogBox :header="myRole.header" :name="myRole.name" :msg="myRole.msg"></DialogBox>
 
-        <div class="my-message">
-          <span style="font-weight: bolder; color: #ffffff;">默认用户</span>
-          <span>他和你说话了</span>
-        </div>
-      </div>
-      <DialogBox :role="myRole"></DialogBox>
-      <DialogBox :role="myRole"></DialogBox>
-      <DialogBox :role="myRole"></DialogBox>
-      <DialogBox :role="myRole"></DialogBox>
-      <DialogBox :role="myRole"></DialogBox>
-      <DialogBox :role="myRole"></DialogBox>
     </div>
     <div id="chat-window">
       <div id="chat-box" class="input">

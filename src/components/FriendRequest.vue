@@ -3,14 +3,22 @@ import {getImg} from "@/utils/utils";
 import api from "@/pludge/axios";
 import {onMounted, ref} from "vue";
 
-let resultSet=ref(null)
+let resultSetFTM=ref(null)
+let resultSetMTF=ref(null)
 
 onMounted(()=>{
-  api.get("/friendRequest/getFriendRequest")
+  api.get("/friendRequest/getFriendToMeRequest")
       .then((result)=>{
         console.log(result.data.data)
         if (result.data.code===200){
-          resultSet.value=result.data.data
+          resultSetFTM.value=result.data.data
+        }
+      })
+  api.get("/friendRequest/getMeToFriendRequest")
+      .then((result)=>{
+        console.log(result.data.data)
+        if (result.data.code===200){
+          resultSetMTF.value=result.data.data
         }
       })
 })
@@ -28,10 +36,10 @@ const handleFriendRequest=(id,code)=>{
 </script>
 
 <template>
-  <div id="page">
+  <div id="page" class="input">
     <h1 id="title">好友申请</h1>
     <div id="show-friends">
-      <template v-for="request in resultSet" :key="request.id">
+      <template v-for="request in resultSetFTM" :key="request.id">
         <div class="card">
           <img :src="getImg(request.friendInfo.header)">
           <div class="describe">
@@ -48,23 +56,51 @@ const handleFriendRequest=(id,code)=>{
               <p v-else-if="request.status===1">已经添加为好友</p>
               <p v-else>已经添加为好友</p>
             </div>
-
           </div>
         </div>
+      </template>
+    </div>
+    <h1 id="title">我的申请</h1>
+    <div id="show-friends">
+      <template v-for="request in resultSetMTF" :key="request.id">
+        <div class="card">
+          <img :src="getImg(request.friendInfo.header)">
+          <div class="describe">
+            <span style="font-weight: bolder; color: #ffffff">{{ request.friendInfo.nickname }}</span>
+            <div class="request-btn">
 
+              <p v-if="request.status===0">对方尚未同意</p>
+              <p v-else>已经添加为好友</p>
+            </div>
+          </div>
+        </div>
       </template>
     </div>
   </div>
 </template>
 
 <style scoped>
+.input::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.input::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  background-color: #c3c3c3;
+}
+.input::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
 #page {
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-content: center;
-
+  height: 100%;
+  overflow: scroll;
 }
 
 #title {
